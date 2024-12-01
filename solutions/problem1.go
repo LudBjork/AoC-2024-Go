@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -28,9 +29,23 @@ func main() {
 	sort.Slice(right, func(i, j int) bool {
 		return right[i] < right[j]
 	})
-
+	var distances []int
+	for index, _ := range left {
+		distances = append(distances, ComputeDistance(left[index], right[index]))
+	}
+	sum := 0
+	for _, partial := range distances {
+		sum += partial
+	}
+	fmt.Println(sum)
 }
 
+func ComputeDistance(left int, right int) int {
+	if left > right {
+		return left - right
+	}
+	return right - left
+}
 func SimpleStringToInt(in string) int {
 	out, err := strconv.Atoi(in)
 	if err != nil {
