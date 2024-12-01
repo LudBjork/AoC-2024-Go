@@ -11,6 +11,21 @@ import (
 
 func main() {
 	left, right := ReadInput("./inputs/problem_1.txt")
+	//part1(left, right)
+	part2(left, right)
+}
+
+func part1(left []int, right []int) {
+
+	// sort both arrays in-place
+	sort.Slice(left, func(i, j int) bool {
+		return left[i] < left[j]
+	})
+
+	sort.Slice(right, func(i, j int) bool {
+		return right[i] < right[j]
+	})
+
 	var distances []int
 	for index, _ := range left {
 		distances = append(distances, ComputeDistance(left[index], right[index]))
@@ -20,6 +35,32 @@ func main() {
 		sum += partial
 	}
 	fmt.Println(sum)
+}
+
+func part2(left []int, right []int) {
+	similarityMap := CreateSimilarityMap(left, right)
+	sum := 0
+	for _, value := range left {
+		sum += value * similarityMap[value]
+	}
+	fmt.Println(sum)
+}
+
+func CreateSimilarityMap(left []int, right []int) map[int]int {
+	var similarityMap map[int]int
+	similarityMap = make(map[int]int)
+
+	for _, valueLeft := range left {
+		// check if already iterated to minimise repeats
+		if similarityMap[valueLeft] == 0 {
+			for _, valueRight := range right {
+				if valueLeft == valueRight {
+					similarityMap[valueLeft]++
+				}
+			}
+		}
+	}
+	return similarityMap
 }
 
 func ComputeDistance(left int, right int) int {
@@ -60,15 +101,6 @@ func ReadInput(filepath string) ([]int, []int) {
 		left = append(left, SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
 		right = append(right, SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
 	}
-
-	// sort both arrays in-place
-	sort.Slice(left, func(i, j int) bool {
-		return left[i] < left[j]
-	})
-
-	sort.Slice(right, func(i, j int) bool {
-		return right[i] < right[j]
-	})
 
 	return left, right
 }
