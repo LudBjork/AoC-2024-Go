@@ -10,25 +10,7 @@ import (
 )
 
 func main() {
-	input := ReadInput("./inputs/problem_1.txt")
-	// _, str because first element in range is the index
-	var left []int
-	var right []int
-	// See problem_1.txt for why SEPARATOR is like this
-	SEPARATOR := "   "
-	for _, str := range input {
-		left = append(left, SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
-		right = append(right, SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
-	}
-
-	// sort both arrays in-place
-	sort.Slice(left, func(i, j int) bool {
-		return left[i] < left[j]
-	})
-
-	sort.Slice(right, func(i, j int) bool {
-		return right[i] < right[j]
-	})
+	left, right := ReadInput("./inputs/problem_1.txt")
 	var distances []int
 	for index, _ := range left {
 		distances = append(distances, ComputeDistance(left[index], right[index]))
@@ -56,7 +38,7 @@ func SimpleStringToInt(in string) int {
 
 // Returns every line of input file as a slice.
 // ENSURE INPUT HAS NO BLANK LINE
-func ReadInput(filepath string) []string {
+func ReadInput(filepath string) ([]int, []int) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		panic(err)
@@ -69,5 +51,24 @@ func ReadInput(filepath string) []string {
 	}
 
 	file.Close()
-	return input
+
+	var left []int
+	var right []int
+	// See problem_1.txt for why SEPARATOR is like this
+	SEPARATOR := "   "
+	for _, str := range input {
+		left = append(left, SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
+		right = append(right, SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
+	}
+
+	// sort both arrays in-place
+	sort.Slice(left, func(i, j int) bool {
+		return left[i] < left[j]
+	})
+
+	sort.Slice(right, func(i, j int) bool {
+		return right[i] < right[j]
+	})
+
+	return left, right
 }
