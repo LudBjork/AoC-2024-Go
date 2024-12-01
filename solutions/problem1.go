@@ -1,17 +1,26 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"ludbjork/aoc-2024/commons"
 	"sort"
-	"strconv"
 	"strings"
 )
 
 func main() {
-	left, right := ReadInput("./inputs/problem_1.txt")
-	//part1(left, right)
+	// DANGER: Depends on where program is ran from. I.e. use project root dir
+	// always!!!
+	input := commons.ReadInput("inputs/problem_1.txt")
+	var left []int
+	var right []int
+	// See problem_1.txt for why SEPARATOR is like this
+	SEPARATOR := "   "
+	for _, str := range input {
+		left = append(left, commons.SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
+		right = append(right, commons.SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
+	}
+
+	part1(left, right)
 	part2(left, right)
 }
 
@@ -68,39 +77,4 @@ func ComputeDistance(left int, right int) int {
 		return left - right
 	}
 	return right - left
-}
-func SimpleStringToInt(in string) int {
-	out, err := strconv.Atoi(in)
-	if err != nil {
-		panic(err)
-	}
-	return out
-}
-
-// Returns every line of input file as a slice.
-// ENSURE INPUT HAS NO BLANK LINE
-func ReadInput(filepath string) ([]int, []int) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	scanner := bufio.NewScanner(file)
-	var input []string
-	for scanner.Scan() {
-		line := scanner.Text()
-		input = append(input, line)
-	}
-
-	file.Close()
-
-	var left []int
-	var right []int
-	// See problem_1.txt for why SEPARATOR is like this
-	SEPARATOR := "   "
-	for _, str := range input {
-		left = append(left, SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
-		right = append(right, SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
-	}
-
-	return left, right
 }
