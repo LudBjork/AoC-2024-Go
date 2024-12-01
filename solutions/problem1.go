@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -17,10 +16,11 @@ func main() {
 	// See problem_1.txt for why SEPARATOR is like this
 	SEPARATOR := "   "
 	for _, str := range input {
-		left = append(left, UnpackStringConvertToInt(strings.Split(str, SEPARATOR)[0]))
-		right = append(right, UnpackStringConvertToInt(strings.Split(str, SEPARATOR)[1]))
+		left = append(left, SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
+		right = append(right, SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
 	}
 
+	// sort both arrays in-place
 	sort.Slice(left, func(i, j int) bool {
 		return left[i] < left[j]
 	})
@@ -28,10 +28,10 @@ func main() {
 	sort.Slice(right, func(i, j int) bool {
 		return right[i] < right[j]
 	})
-	fmt.Println(left)
+
 }
 
-func UnpackStringConvertToInt(in string) int {
+func SimpleStringToInt(in string) int {
 	out, err := strconv.Atoi(in)
 	if err != nil {
 		panic(err)
