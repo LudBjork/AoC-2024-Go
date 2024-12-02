@@ -6,6 +6,8 @@ import (
 	"strconv"
 )
 
+// DANGER: Depends on where program is ran from. I.e. use project root dir
+// always!!!
 func ReadInput(filepath string) []string {
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -28,4 +30,19 @@ func SimpleStringToInt(in string) int {
 		panic(err)
 	}
 	return out
+}
+
+func StringSliceToIntSlice(in []string) []int {
+	var out []int
+	for _, value := range in {
+		out = append(out, SimpleStringToInt(value))
+	}
+	return out
+}
+
+func ComputeDistance(left int, right int) int {
+	if left > right {
+		return left - right
+	}
+	return right - left
 }

@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	solutions.SolveProblem1()
+
+	solutions.SolveProblem2()
 }
