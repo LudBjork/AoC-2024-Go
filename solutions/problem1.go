@@ -1,4 +1,4 @@
-package main
+package solutions
 
 import (
 	"fmt"
@@ -7,9 +7,8 @@ import (
 	"strings"
 )
 
-func main() {
-	// DANGER: Depends on where program is ran from. I.e. use project root dir
-	// always!!!
+func SolveProblem1() {
+
 	input := commons.ReadInput("inputs/problem_1.txt")
 	var left []int
 	var right []int
@@ -20,11 +19,11 @@ func main() {
 		right = append(right, commons.SimpleStringToInt(strings.Split(str, SEPARATOR)[1]))
 	}
 
-	part1(left, right)
-	part2(left, right)
+	p1_part1(left, right)
+	p1_part2(left, right)
 }
 
-func part1(left []int, right []int) {
+func p1_part1(left []int, right []int) {
 
 	// sort both arrays in-place
 	sort.Slice(left, func(i, j int) bool {
@@ -37,7 +36,7 @@ func part1(left []int, right []int) {
 
 	var distances []int
 	for index, _ := range left {
-		distances = append(distances, ComputeDistance(left[index], right[index]))
+		distances = append(distances, commons.ComputeDistance(left[index], right[index]))
 	}
 	sum := 0
 	for _, partial := range distances {
@@ -46,8 +45,8 @@ func part1(left []int, right []int) {
 	fmt.Println(sum)
 }
 
-func part2(left []int, right []int) {
-	similarityMap := CreateSimilarityMap(left, right)
+func p1_part2(left []int, right []int) {
+	similarityMap := createSimilarityMap(left, right)
 	sum := 0
 	for _, value := range left {
 		sum += value * similarityMap[value]
@@ -55,7 +54,7 @@ func part2(left []int, right []int) {
 	fmt.Println(sum)
 }
 
-func CreateSimilarityMap(left []int, right []int) map[int]int {
+func createSimilarityMap(left []int, right []int) map[int]int {
 	var similarityMap map[int]int
 	similarityMap = make(map[int]int)
 
@@ -70,11 +69,4 @@ func CreateSimilarityMap(left []int, right []int) map[int]int {
 		}
 	}
 	return similarityMap
-}
-
-func ComputeDistance(left int, right int) int {
-	if left > right {
-		return left - right
-	}
-	return right - left
 }
