@@ -8,8 +8,8 @@ import (
 )
 
 func SolveProblem3() {
-	//input := commons.ReadInput("inputs/day3.txt")
-	//p3_part1(input)
+	input := commons.ReadInput("inputs/day3.txt")
+	p3_part1(input)
 
 	inputAsStr := commons.ReadInputV2("inputs/day3.txt")
 	p3_part2(inputAsStr)
