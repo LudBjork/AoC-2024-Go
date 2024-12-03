@@ -8,26 +8,24 @@ import (
 )
 
 func SolveProblem3() {
-	input := commons.ReadInput("inputs/day3.txt")
+	input := commons.ReadInputV2("inputs/day3.txt")
 	p3_part1(input)
 
 	inputAsStr := commons.ReadInputV2("inputs/day3.txt")
 	p3_part2(inputAsStr)
 }
 
-func p3_part1(input []string) {
+func p3_part1(input string) {
 	commandRegEx := regexp.MustCompile("(mul\\([, [0-9]+\\))")
 	multiplesSum := 0
 	// This code is dreadful but solves the problem :)
-	for _, line := range input {
 
-		found := commandRegEx.FindAllString(line, len(line)+1)
-		if len(found) > 0 {
-			for _, mulStr := range found {
-				temp := strings.Split(mulStr, " ")
-				for _, mul := range performMultiplication(temp) {
-					multiplesSum += mul
-				}
+	found := commandRegEx.FindAllString(input, -1)
+	if len(found) > 0 {
+		for _, mulStr := range found {
+			temp := strings.Split(mulStr, " ")
+			for _, mul := range performMultiplication(temp) {
+				multiplesSum += mul
 			}
 		}
 	}
