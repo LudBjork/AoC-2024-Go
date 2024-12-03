@@ -7,7 +7,7 @@ import (
 )
 
 func SolveProblem2() {
-	input := commons.ReadInput("inputs/problem_2.txt")
+	input := commons.ReadInput("inputs/day2.txt")
 
 	p2_part2(input)
 }

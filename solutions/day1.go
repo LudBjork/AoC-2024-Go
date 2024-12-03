@@ -9,10 +9,10 @@ import (
 
 func SolveProblem1() {
 
-	input := commons.ReadInput("inputs/problem_1.txt")
+	input := commons.ReadInput("inputs/day1.txt")
 	var left []int
 	var right []int
-	// See problem_1.txt for why SEPARATOR is like this
+	// See day1.txt for why SEPARATOR is like this
 	SEPARATOR := "   "
 	for _, str := range input {
 		left = append(left, commons.SimpleStringToInt(strings.Split(str, SEPARATOR)[0]))
