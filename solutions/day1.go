@@ -9,7 +9,7 @@ import (
 
 func SolveProblem1() {
 
-	input := commons.ReadInput("inputs/day1.txt")
+	input := commons.DeprecatedReadInput("inputs/day1.txt")
 	var left []int
 	var right []int
 	// See day1.txt for why SEPARATOR is like this

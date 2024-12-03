@@ -8,7 +8,7 @@ import (
 
 // DANGER: Depends on where program is ran from. I.e. use project root dir
 // always!!!
-func ReadInput(filepath string) []string {
+func DeprecatedReadInput(filepath string) []string {
 	file, err := os.Open(filepath)
 	if err != nil {
 		panic(err)
@@ -25,7 +25,7 @@ func ReadInput(filepath string) []string {
 	return input
 }
 
-func ReadInputV2(filepath string) string {
+func ReadInput(filepath string) string {
 	file, err := os.Open(filepath)
 	if err != nil {
 		panic(err)
