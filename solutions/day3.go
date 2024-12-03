@@ -8,17 +8,20 @@ import (
 )
 
 func SolveProblem3() {
-	input := commons.ReadInput("inputs/day3.txt")
-	p3_part1(input)
+	//input := commons.ReadInput("inputs/day3.txt")
+	//p3_part1(input)
+
+	inputAsStr := commons.ReadInputV2("inputs/day3.txt")
+	p3_part2(inputAsStr)
 }
 
 func p3_part1(input []string) {
-	regexPattern, _ := regexp.Compile("(mul\\([, [0-9]+\\))")
+	commandRegEx := regexp.MustCompile("(mul\\([, [0-9]+\\))")
 	multiplesSum := 0
 	// This code is dreadful but solves the problem :)
 	for _, line := range input {
 
-		found := regexPattern.FindAllString(line, len(line)+1)
+		found := commandRegEx.FindAllString(line, len(line)+1)
 		if len(found) > 0 {
 			for _, mulStr := range found {
 				temp := strings.Split(mulStr, " ")
@@ -29,6 +32,20 @@ func p3_part1(input []string) {
 		}
 	}
 	fmt.Println(multiplesSum)
+}
+
+func p3_part2(input string) {
+	ignoreRegex := regexp.MustCompile("don't\\(\\)(.*?)do\\(\\)")
+	commandRegEx := regexp.MustCompile("(mul\\([, [0-9]+\\))")
+
+	cleanedUpInput := ignoreRegex.ReplaceAllString(input, "")
+
+	productsArr := performMultiplication(commandRegEx.FindAllString(cleanedUpInput, -1))
+	sum := 0
+	for _, product := range productsArr {
+		sum += product
+	}
+	fmt.Println(sum)
 }
 func performMultiplication(pairArr []string) []int {
 	r := regexp.MustCompile("[0-9]+")

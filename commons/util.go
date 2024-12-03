@@ -24,6 +24,23 @@ func ReadInput(filepath string) []string {
 
 	return input
 }
+
+func ReadInputV2(filepath string) string {
+	file, err := os.Open(filepath)
+	if err != nil {
+		panic(err)
+	}
+	scanner := bufio.NewScanner(file)
+	var input string
+	for scanner.Scan() {
+		input += scanner.Text()
+	}
+
+	file.Close()
+	return input
+
+}
+
 func SimpleStringToInt(in string) int {
 	out, err := strconv.Atoi(in)
 	if err != nil {
