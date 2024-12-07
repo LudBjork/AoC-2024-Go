@@ -45,8 +45,6 @@ func getCorrectlyOrderedRules(
 			afterCurrent := line[i+1:]
 			current := line[i]
 			for j := range afterCurrent {
-				// if a rule after current has current in its
-				// ruleset, order must be incorrect!
 				if !slices.Contains(orderingRuleSet[current], afterCurrent[j]) {
 					isLineCorrect = false
 					break
