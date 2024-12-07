@@ -68,7 +68,7 @@ func sortAllIncorrectlyOrderedRules(
 
 func getCorrectlyOrderedRules(
 	orderingRules []string,
-	orderingRuleSet map[string][]string,
+	orderingRuleSet []string,
 ) []string {
 	var correctlyOrdered []string
 	for lineIndex := range orderingRules {
@@ -81,22 +81,13 @@ func getCorrectlyOrderedRules(
 	return correctlyOrdered
 }
 
-func isLineCorrectlyOrdered(line []string, orderingRuleSet map[string][]string) bool {
+func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 
 	for i := range line {
-		afterCurrent := line[i+1:]
+		after := line[i+1:]
 		current := line[i]
-		for j := range afterCurrent {
-			if len(orderingRuleSet[current]) > 0 &&
-				!slices.Contains(orderingRuleSet[current], afterCurrent[j]) {
-
-				return false
-			}
-
-			if j < len(line)-1 &&
-				len(orderingRuleSet[afterCurrent[j]]) > 0 &&
-				slices.Contains(orderingRuleSet[afterCurrent[j]], current) {
-
+		for j := range after {
+			if compareRules(orderingRuleSet, current, after[j]) == -1 {
 				return false
 			}
 		}
@@ -105,8 +96,41 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet map[string][]string) 
 	return true
 }
 
-func getOrderingRuleset(input string) map[string][]string {
-	orderMap := make(map[string][]string)
+// think of it like this "a|b" means the same as a < b
+// thus if prev|next matches input return 1.
+//
+// if they're the same somehow return 0
+func compareRules(orderingRuleSet []string, prev string, next string) int {
+	var bob strings.Builder
+	for _, rule := range orderingRuleSet {
+		if strings.Contains(rule, prev) && strings.Contains(rule, next) {
+
+			// check less-than
+			bob.WriteString(prev)
+			bob.WriteString("|")
+			bob.WriteString(next)
+
+			if strings.Contains(rule, bob.String()) {
+				return 1
+			}
+
+			bob.Reset()
+			bob.WriteString(next)
+			bob.WriteString("|")
+			bob.WriteString(prev)
+			if strings.Contains(rule, bob.String()) {
+				return -1
+			}
+
+			return 0
+		}
+	}
+
+	return 0
+}
+
+func getOrderingRuleset(input string) []string {
+	var orderRuleSet []string
 	var digitHolder strings.Builder
 	for pos := range input {
 		if digitHolder.Len() < 5 {
@@ -115,14 +139,13 @@ func getOrderingRuleset(input string) map[string][]string {
 		if digitHolder.Len() == 5 {
 			if strings.Contains(digitHolder.String(), "|") {
 
-				order := strings.Split(digitHolder.String(), "|")
-				// store as array since one ordering could match multiple
-				orderMap[order[0]] = append(orderMap[order[0]], order[1])
+				// store each rule individually to allow two-way comparison much
+				orderRuleSet = append(orderRuleSet, digitHolder.String())
 			}
 			digitHolder.Reset()
 		}
 	}
-	return orderMap
+	return orderRuleSet
 }
 
 func getPageOrderingRules(input string) []string {
