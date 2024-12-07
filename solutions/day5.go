@@ -57,7 +57,6 @@ func getCorrectlyOrderedRules(
 		}
 
 	}
-	fmt.Println(correctlyOrdered)
 	return correctlyOrdered
 }
 
