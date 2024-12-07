@@ -12,18 +12,26 @@ func SolveProblem5() {
 	input := commons.ReadInput("inputs/day5.txt")
 	p5_part1(input)
 
+	p5_part2(input)
+
 }
 
 func p5_part1(input string) {
 
-	orderingRuleset := createOrderingRuleset(input)
-	orderingList := getPageOrderingList(input)
+	orderingRuleset := getOrderingRuleset(input)
+	orderingList := getPageOrderingRules(input)
 	correctlyOrdered := getCorrectlyOrderedRules(orderingList, orderingRuleset)
 
-	fmt.Println(getMiddleSum(correctlyOrdered))
+	fmt.Println(calculateMiddleSum(correctlyOrdered))
 }
 
-func getMiddleSum(correctlyOrdered []string) int {
+func p5_part2(input string) {
+	incorrectlyOrdered := getIncorrectlyOrderedRules(input)
+
+	fmt.Println(incorrectlyOrdered)
+}
+
+func calculateMiddleSum(correctlyOrdered []string) int {
 	middleSum := 0
 	for i := range correctlyOrdered {
 		current := strings.Split(correctlyOrdered[i], ",")
@@ -33,6 +41,31 @@ func getMiddleSum(correctlyOrdered []string) int {
 	return middleSum
 }
 
+func getIncorrectlyOrderedRules(input string) []string {
+
+	orderingRules := getPageOrderingRules(input)
+	ruleSet := getOrderingRuleset(input)
+	correctlyOrdered := getCorrectlyOrderedRules(orderingRules, ruleSet)
+
+	var incorrectlyOrdered []string
+
+	for _, rule := range orderingRules {
+
+		if !slices.Contains(correctlyOrdered, rule) {
+			incorrectlyOrdered = append(incorrectlyOrdered, rule)
+		}
+	}
+
+	return incorrectlyOrdered
+}
+
+func sortAllIncorrectlyOrderedRules(
+	incorrectlyOrdered []string,
+	ruleSet map[string][]string,
+) {
+
+}
+
 func getCorrectlyOrderedRules(
 	orderingRules []string,
 	orderingRuleSet map[string][]string,
@@ -40,19 +73,7 @@ func getCorrectlyOrderedRules(
 	var correctlyOrdered []string
 	for lineIndex := range orderingRules {
 		line := strings.Split(orderingRules[lineIndex], ",")
-		isLineCorrect := true
-		for i := range line {
-			afterCurrent := line[i+1:]
-			current := line[i]
-			for j := range afterCurrent {
-				if !slices.Contains(orderingRuleSet[current], afterCurrent[j]) {
-					isLineCorrect = false
-					break
-				}
-			}
-		}
-
-		if isLineCorrect {
+		if isLineCorrectlyOrdered(line, orderingRuleSet) {
 			correctlyOrdered = append(correctlyOrdered, strings.Join(line, ","))
 		}
 
@@ -60,7 +81,31 @@ func getCorrectlyOrderedRules(
 	return correctlyOrdered
 }
 
-func createOrderingRuleset(input string) map[string][]string {
+func isLineCorrectlyOrdered(line []string, orderingRuleSet map[string][]string) bool {
+
+	for i := range line {
+		afterCurrent := line[i+1:]
+		current := line[i]
+		for j := range afterCurrent {
+			if len(orderingRuleSet[current]) > 0 &&
+				!slices.Contains(orderingRuleSet[current], afterCurrent[j]) {
+
+				return false
+			}
+
+			if j < len(line)-1 &&
+				len(orderingRuleSet[afterCurrent[j]]) > 0 &&
+				slices.Contains(orderingRuleSet[afterCurrent[j]], current) {
+
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func getOrderingRuleset(input string) map[string][]string {
 	orderMap := make(map[string][]string)
 	var digitHolder strings.Builder
 	for pos := range input {
@@ -80,13 +125,7 @@ func createOrderingRuleset(input string) map[string][]string {
 	return orderMap
 }
 
-func excludeRuleSet(input string) string {
-	orderingPart := strings.Split(input, "|")
-	orderingPart = orderingPart[len(orderingPart)-1:]
-	return strings.Join(orderingPart, "")[2:]
-}
-
-func getPageOrderingList(input string) []string {
+func getPageOrderingRules(input string) []string {
 	var orderingList []string
 	var builder strings.Builder
 	excluded := strings.Split(excludeRuleSet(input), ",")
@@ -104,4 +143,10 @@ func getPageOrderingList(input string) []string {
 		}
 	}
 	return orderingList
+}
+
+func excludeRuleSet(input string) string {
+	orderingPart := strings.Split(input, "|")
+	orderingPart = orderingPart[len(orderingPart)-1:]
+	return strings.Join(orderingPart, "")[2:]
 }
