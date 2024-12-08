@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ludbjork/aoc-2024/commons"
 	"slices"
+	"sort"
 	"strings"
 )
 
@@ -26,9 +27,17 @@ func p5_part1(input string) {
 }
 
 func p5_part2(input string) {
+	orderingRuleset := getOrderingRuleset(input)
+
 	incorrectlyOrdered := getIncorrectlyOrderedRules(input)
 
+	// sorts in-place ???
+	sort.Slice(incorrectlyOrdered, func(i, j int) bool {
+		return compareRules(orderingRuleset, incorrectlyOrdered[i], incorrectlyOrdered[j]) == 1
+	})
+
 	fmt.Println(incorrectlyOrdered)
+	fmt.Println(calculateMiddleSum(incorrectlyOrdered))
 }
 
 func calculateMiddleSum(correctlyOrdered []string) int {
@@ -50,20 +59,11 @@ func getIncorrectlyOrderedRules(input string) []string {
 	var incorrectlyOrdered []string
 
 	for _, rule := range orderingRules {
-
 		if !slices.Contains(correctlyOrdered, rule) {
 			incorrectlyOrdered = append(incorrectlyOrdered, rule)
 		}
 	}
-
 	return incorrectlyOrdered
-}
-
-func sortAllIncorrectlyOrderedRules(
-	incorrectlyOrdered []string,
-	ruleSet map[string][]string,
-) {
-
 }
 
 func getCorrectlyOrderedRules(
@@ -87,7 +87,7 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 		after := line[i+1:]
 		current := line[i]
 		for j := range after {
-			if compareRules(orderingRuleSet, current, after[j]) == -1 {
+			if compareRules(orderingRuleSet, current, after[j]) != 1 {
 				return false
 			}
 		}
@@ -96,7 +96,7 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 	return true
 }
 
-// think of it like this "a|b" means the same as a < b
+// Interpret "a|b" the same as "a < b"
 // thus if prev|next matches input return 1.
 //
 // if they're the same somehow return 0
@@ -113,8 +113,8 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 			if strings.Contains(rule, bob.String()) {
 				return 1
 			}
-
 			bob.Reset()
+
 			bob.WriteString(next)
 			bob.WriteString("|")
 			bob.WriteString(prev)
@@ -122,7 +122,6 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 				return -1
 			}
 
-			return 0
 		}
 	}
 
@@ -151,17 +150,17 @@ func getOrderingRuleset(input string) []string {
 func getPageOrderingRules(input string) []string {
 	var orderingList []string
 	var builder strings.Builder
-	excluded := strings.Split(excludeRuleSet(input), ",")
-	for i := range excluded {
-		if len(excluded[i]) == 4 {
-			builder.WriteString(excluded[i][:2])
+	orderings := strings.Split(excludeRuleSet(input), ",")
+	for i := range orderings {
+		if len(orderings[i]) == 4 {
+			builder.WriteString(orderings[i][:2])
 			orderingList = append(orderingList, builder.String())
 
 			builder.Reset()
-			builder.WriteString(excluded[i][2:])
+			builder.WriteString(orderings[i][2:])
 			builder.WriteString(",")
 		} else {
-			builder.WriteString(excluded[i])
+			builder.WriteString(orderings[i])
 			builder.WriteString(",")
 		}
 	}
