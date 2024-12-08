@@ -11,7 +11,7 @@ import (
 func SolveProblem5() {
 
 	input := commons.ReadInput("inputs/day5.txt")
-	p5_part1(input)
+	//	p5_part1(input)
 
 	p5_part2(input)
 
@@ -20,7 +20,7 @@ func SolveProblem5() {
 func p5_part1(input string) {
 
 	orderingRuleset := getOrderingRuleset(input)
-	orderingList := getPageOrderingRules(input)
+	orderingList := getOrderings(input)
 	correctlyOrdered := getCorrectlyOrderedRules(orderingList, orderingRuleset)
 
 	fmt.Println(calculateMiddleSum(correctlyOrdered))
@@ -35,9 +35,8 @@ func p5_part2(input string) {
 	sort.Slice(incorrectlyOrdered, func(i, j int) bool {
 		return compareRules(orderingRuleset, incorrectlyOrdered[i], incorrectlyOrdered[j]) == 1
 	})
-
-	fmt.Println(incorrectlyOrdered)
 	fmt.Println(calculateMiddleSum(incorrectlyOrdered))
+
 }
 
 func calculateMiddleSum(correctlyOrdered []string) int {
@@ -52,7 +51,7 @@ func calculateMiddleSum(correctlyOrdered []string) int {
 
 func getIncorrectlyOrderedRules(input string) []string {
 
-	orderingRules := getPageOrderingRules(input)
+	orderingRules := getOrderings(input)
 	ruleSet := getOrderingRuleset(input)
 	correctlyOrdered := getCorrectlyOrderedRules(orderingRules, ruleSet)
 
@@ -147,28 +146,22 @@ func getOrderingRuleset(input string) []string {
 	return orderRuleSet
 }
 
-func getPageOrderingRules(input string) []string {
-	var orderingList []string
-	var builder strings.Builder
-	orderings := strings.Split(excludeRuleSet(input), ",")
-	for i := range orderings {
-		if len(orderings[i]) == 4 {
-			builder.WriteString(orderings[i][:2])
-			orderingList = append(orderingList, builder.String())
+func getOrderings(input string) []string {
+	tmp := strings.Split(input, "|")
+	tmp = tmp[len(tmp)-1:]
 
-			builder.Reset()
-			builder.WriteString(orderings[i][2:])
-			builder.WriteString(",")
-		} else {
-			builder.WriteString(orderings[i])
-			builder.WriteString(",")
+	orderings := strings.Join(tmp, "")[2:]
+	orderingSlice := strings.Split(orderings, ",")
+	for i := range orderingSlice {
+		if len(orderingSlice[i]) == 4 {
+			var bob strings.Builder
+			bob.WriteString(orderingSlice[i][:2])
+			bob.WriteString("\n")
+			orderingSlice[i] = strings.Replace(orderingSlice[i], orderingSlice[i][:2], bob.String(), 1)
+			bob.Reset()
 		}
 	}
-	return orderingList
-}
-
-func excludeRuleSet(input string) string {
-	orderingPart := strings.Split(input, "|")
-	orderingPart = orderingPart[len(orderingPart)-1:]
-	return strings.Join(orderingPart, "")[2:]
+	// ensure after putting in \n at every place w. xyab that we extract out
+	// each line properly
+	return strings.Split(strings.Join(orderingSlice, ","), "\n")
 }
