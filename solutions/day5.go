@@ -95,13 +95,14 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 	return true
 }
 
-// Interpret "a|b" the same as "a < b"
-// thus if prev|next matches input return 1.
-//
-// if they're the same somehow return 0
+// Interpret "a|b" as "a must come before b"
+// if Rule prev|next matches prev , next return 1.
+// method assumes non-contradictory rules
+
 func compareRules(orderingRuleSet []string, prev string, next string) int {
 	var bob strings.Builder
 	for _, rule := range orderingRuleSet {
+		// not relevant to check rule if both aren't present
 		if strings.Contains(rule, prev) && strings.Contains(rule, next) {
 
 			// check less-than
@@ -110,6 +111,7 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 			bob.WriteString(next)
 
 			if strings.Contains(rule, bob.String()) {
+				// prev is before next
 				return 1
 			}
 			bob.Reset()
@@ -124,6 +126,7 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 		}
 	}
 
+	// do nothing
 	return 0
 }
 
