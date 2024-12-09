@@ -11,7 +11,7 @@ import (
 func SolveProblem5() {
 
 	input := commons.ReadInput("inputs/day5.txt")
-	//	p5_part1(input)
+	//p5_part1(input)
 
 	p5_part2(input)
 
@@ -75,7 +75,6 @@ func getCorrectlyOrderedRules(
 		if isLineCorrectlyOrdered(line, orderingRuleSet) {
 			correctlyOrdered = append(correctlyOrdered, strings.Join(line, ","))
 		}
-
 	}
 	return correctlyOrdered
 }
@@ -83,10 +82,14 @@ func getCorrectlyOrderedRules(
 func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 
 	for i := range line {
+		// is it sufficient to only check succeeding entries???
 		after := line[i+1:]
 		current := line[i]
 		for j := range after {
 			if compareRules(orderingRuleSet, current, after[j]) != 1 {
+				return false
+			}
+			if compareRules(orderingRuleSet, after[j], current) != -1 {
 				return false
 			}
 		}
@@ -101,6 +104,7 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 
 func compareRules(orderingRuleSet []string, prev string, next string) int {
 	var bob strings.Builder
+
 	for _, rule := range orderingRuleSet {
 		// not relevant to check rule if both aren't present
 		if strings.Contains(rule, prev) && strings.Contains(rule, next) {
@@ -110,7 +114,7 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 			bob.WriteString("|")
 			bob.WriteString(next)
 
-			if strings.Contains(rule, bob.String()) {
+			if rule == bob.String() {
 				// prev is before next
 				return 1
 			}
@@ -119,7 +123,8 @@ func compareRules(orderingRuleSet []string, prev string, next string) int {
 			bob.WriteString(next)
 			bob.WriteString("|")
 			bob.WriteString(prev)
-			if strings.Contains(rule, bob.String()) {
+			if rule == bob.String() {
+				// prev is after next
 				return -1
 			}
 
