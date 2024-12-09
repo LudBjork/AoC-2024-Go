@@ -76,6 +76,7 @@ func getCorrectlyOrderedRules(
 			correctlyOrdered = append(correctlyOrdered, strings.Join(line, ","))
 		}
 	}
+	fmt.Println(correctlyOrdered)
 	return correctlyOrdered
 }
 
@@ -86,10 +87,10 @@ func isLineCorrectlyOrdered(line []string, orderingRuleSet []string) bool {
 		after := line[i+1:]
 		current := line[i]
 		for j := range after {
-			if compareRules(orderingRuleSet, current, after[j]) != 1 {
+			if compareRules(orderingRuleSet, current, after[j]) == -1 {
 				return false
 			}
-			if compareRules(orderingRuleSet, after[j], current) != -1 {
+			if compareRules(orderingRuleSet, after[j], current) == 1 {
 				return false
 			}
 		}
